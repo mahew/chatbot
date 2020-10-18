@@ -1,0 +1,15 @@
+Cocktail chatbot:
+
+Chatbot allows you to ask about a certain cocktail and tell you about it
+
+Allow you to ask how to make the cocktail
+
+The ingredients needed to make the cocktail 
+
+Get a recommendation for a cocktail (random)
+
+Get a recommendation for a cocktail based on an ingredient
+
+Get pictures of each cocktail
+
+Get pictures of ingredients 
