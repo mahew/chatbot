@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+from sklearn.metrics.pairwise import cosine_similarity
 from PIL import Image
 import json, requests
 import aiml
@@ -12,17 +12,20 @@ def api(req, search = ""):
         define_url = r"search.php?s=" + search
         response = get_json_response(define_url)
         if response != False:
-            response = requests.get(response["drinks"][0]["strDrinkThumb"], stream=True)
-            img = Image.open(response.raw)
-            plt.imshow(img)
-            plt.show()
+            print("Here is a {}!".format(search))
+            show_cocktail(response)
+            return "Anything else you would like to know?"
+            
     elif req == "search-ingredient":
         pass
-    elif req == "random-cocktail":
+
+    elif req == "random":
         rand_url = r"random.php"
         response = get_json_response(rand_url)
         if response != False:
-            return response[""]
+            show_cocktail(response)
+            return "Anything else you would like to know?"
+
     else:
         return "I don't understand what you mean! Sorry!"
 
@@ -37,11 +40,18 @@ def get_json_response(url):
     else:
          return False
 
+def show_cocktail(cocktail_json):
+    response = requests.get(cocktail_json["drinks"][0]["strDrinkThumb"], stream=True)
+    img = Image.open(response.raw)
+    plt.imshow(img)
+    plt.show()
+
+
 kern = aiml.Kernel()
 kern.setTextEncoding(None)
 kern.bootstrap(learnFiles="cocktail-chatbot.xml")
 
-print("Welcome to this chat bot. Please feel free to ask questions from me!")
+print("Welcome to the cocktail chat bot! Feel free to ask me about cocktails :)")
 
 while True:
 
@@ -53,6 +63,7 @@ while True:
 
     #pre-process user input and determine response agent (if needed)
     responseAgent = 'aiml'
+
     if responseAgent == 'aiml':
         answer = kern.respond(userInput)
 
