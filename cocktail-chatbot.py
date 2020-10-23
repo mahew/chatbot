@@ -1,4 +1,5 @@
 ﻿#!/usr/bin/env python3
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from PIL import Image
 import json, requests
