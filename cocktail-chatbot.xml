@@ -11,4 +11,9 @@
   <template>#define$<star /></template>
 </category>
 
+<category>
+  <pattern> * </pattern>
+  <template>|<star /></template>
+</category>
+
 </aiml>

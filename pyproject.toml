@@ -7,6 +7,8 @@ authors = ["repl.it user <replituser@example.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 sklearn = "^0.0"
+python-aiml = "^0.9.3"
+matplotlib = "^3.3.2"
 
 [tool.poetry.dev-dependencies]
 
