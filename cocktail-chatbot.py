@@ -1,18 +1,20 @@
 ﻿#!/usr/bin/env python3
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import CountVectorizer
 from PIL import Image
 import json, requests
 import aiml
 import matplotlib.pyplot as plt
 import csv
+import warnings
 
 URL_BASE = "https://www.thecocktaildb.com/api/json/v1/1/"
 
+CSV = {}
 with open('cocktailQA.csv') as f:
     reader = csv.reader(f, skipinitialspace=True)
-    result = dict(reader)
-    print(result)
+    CSV = dict(reader)
 
 def api(req, search = ""):
     if req == "define":
@@ -53,8 +55,17 @@ def show_cocktail(cocktail_json):
     plt.imshow(img)
     plt.show()
 
-def calculate_tf_idf(s):
-    return vec.fit_transform(s)
+def get_cosine_sim(*strs): 
+    vectors = [t for t in get_vectors(*strs)]
+    # indexing the [0][1] gets us the single cosine simularity between the sentences
+    # as calculating the differences produces a 2x2 matrix
+    return cosine_similarity(vectors)[0][1]
+    
+def get_vectors(*strs):
+    text = [t for t in strs]
+    vectorizer = CountVectorizer(text)
+    vectorizer.fit(text)
+    return(vectorizer.transform(text).toarray())
 
 kern = aiml.Kernel()
 kern.setTextEncoding(None)
@@ -62,7 +73,6 @@ kern.bootstrap(learnFiles="cocktail-chatbot.xml")
 vec = TfidfVectorizer(stop_words = 'english')
 # If kern response is defaulted, we can use cosine simularity to check if the inputted command
 # Is similar enough to another command, and then re run it through the aiml agent
-
 print("Welcome to the cocktail chat bot! Feel free to ask me about cocktails :)")
 while True:
     try:
@@ -89,19 +99,19 @@ while True:
     elif answer[0] == '|':
         entry = answer[1:]
         # Need to make the string iterable, [] makes string into list
-        try:
-          entry_vector = vec.fit_transform([entry])
-          for x in CSV:
-            x_vector = vec.fit_transform([x])
+        highest_simularity = '';
+        highest_simularity_vector = 0;
+        for x in CSV:
+          with warnings.catch_warnings():
+            # ignore all caught warnings
+            warnings.filterwarnings("ignore")
+            # execute code that will generate warnings
             # For debugging to see all simularities
-            entry_x_similarity = cosine_similarity(entry_vector, x_vector)
-            print("Vector entry: {} Simularity: {}\n".format(x, entry_x_similarity))
-            if entry_x_similarity > 0.8:
-              answer = kern.respond(x)
-              print(answer)
-        except ValueError:
-          # Might all be stop words, nothing to do now
-          print("I don't understand what you mean! Sorry!")
-
+            entry_x_similarity = get_cosine_sim(entry, x)
+            if entry_x_similarity > highest_simularity_vector:
+              highest_simularity_vector = entry_x_similarity
+              highest_simularity = x
+            #print("Vector entry: {} Simularity: {}\n".format(x, entry_x_similarity))
+        print(CSV[highest_simularity])
     else:
         print(answer)
