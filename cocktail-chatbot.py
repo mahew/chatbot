@@ -5,12 +5,14 @@ from PIL import Image
 import json, requests
 import aiml
 import matplotlib.pyplot as plt
+import csv
 
 URL_BASE = "https://www.thecocktaildb.com/api/json/v1/1/"
 
-CSV = [
-    'CAN YOU RECOMMEND A COCKTAIL?'
-]
+with open('cocktailQA.csv') as f:
+    reader = csv.reader(f, skipinitialspace=True)
+    result = dict(reader)
+    print(result)
 
 def api(req, search = ""):
     if req == "define":
