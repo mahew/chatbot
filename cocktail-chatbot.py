@@ -22,14 +22,17 @@ with open('cocktailQA.csv') as f:
 def api(req, search = ""):
   try:
     if req == "define":
+        # search the api for the given cocktail
         define_url = r"search.php?s=" + search
         response = get_json_response(define_url)
         if response != False:
+            # show the cocktail image if a reponse if given
             show_cocktail(response)
             print("Here is a {}!".format(search))
             return "Anything else you would like to know?"
             
     elif req == "recipe":
+        # gets the recipe for the given cocktail
         recipe_url = r"search.php?s=" + search
         response = get_json_response(recipe_url)
         if response != False:
@@ -37,6 +40,7 @@ def api(req, search = ""):
             return "Anything else you would like to know?"
 
     elif req == "glass":
+        # gets the glass for the given cocktail
         glass_url = r"search.php?s=" + search
         response = get_json_response(glass_url)
         if response != False:
@@ -44,8 +48,8 @@ def api(req, search = ""):
             return "Anything else you would like to know?"
 
     elif req == "ingredients":
-        glass_url = r"search.php?s=" + search
-        response = get_json_response(glass_url)
+        ingredients_url = r"search.php?s=" + search
+        response = get_json_response(ingredients_url)
         if response != False:
             # lists of all ingredients           
             ingredients = []
@@ -80,6 +84,7 @@ def api(req, search = ""):
             return "Anything else you would like to know?"
 
     elif req == "random":
+        # use random api for to get random cocktail
         rand_url = r"random.php"
         response = get_json_response(rand_url)
         if response != False:
@@ -88,9 +93,11 @@ def api(req, search = ""):
             return "Anything else you would like to know?"
 
     elif req == "exit":
+        # exit the program
         print("Goodbye! Have a good day!")
         sys.exit()
 
+    # if not found, print a message
     else:
         return "I don't understand what you mean! Sorry!"
 
@@ -98,10 +105,12 @@ def api(req, search = ""):
     print("I'm not sure what that is! Try asking me again")
 
 def get_json_response(url):
+    # use base url and additional url arguments provided
     response = requests.get(URL_BASE + url)
     if response.status_code == 200:
         response_json = json.loads(response.content)
         if response_json:
+            # if the response is good, return the json as a dict object
             return response_json
         else:
             return False
@@ -122,11 +131,13 @@ def calculate_cosine_simularity(*strings):
     return cosine_similarity(vectors)[0][1]
     
 def get_string_vectors(*strings):
+    # get word vectors for the strings provided by using the tfidf vectorizer
     text = [t for t in strings]
     vectorizer = TfidfVectorizer(text)
     vectorizer.fit(text)
     return(vectorizer.transform(text).toarray())
 
+# aiml kernel used to provide reponses from xml file
 kern = aiml.Kernel()
 kern.setTextEncoding(None)
 kern.bootstrap(learnFiles="cocktail-chatbot.xml")
@@ -135,6 +146,7 @@ print("Welcome to the cocktail chat bot! Feel free to ask me about cocktails!")
 
 while True:
     try:
+        # keep getting user inputs until the program is exited
         userInput = input("> ")
     except (KeyboardInterrupt, EOFError) as e:
         print("Exiting - Goodbye!")
@@ -155,23 +167,24 @@ while True:
     # if no aiml command found, use bag of words with tf.idf cosine simularity to respond
     elif answer[0] == '|':
       try:
+        # entry is got from aiml reponse
         entry = answer[1:]
-        # Need to make the string iterable, [] makes string into list
+        # store local variables for highest simularity
         highest_simularity_string = '';
         highest_simularity = 0;
         for x in CSV:
           with warnings.catch_warnings():
             # ignore all caught warnings - commited by filter
             warnings.filterwarnings("ignore")
-            # For debugging to see all simularities
+            # iterate all csv entries and find highest simularity
             entry_x_similarity = calculate_cosine_simularity(entry, x)
             if entry_x_similarity > highest_simularity:
               highest_simularity = entry_x_similarity
               highest_simularity_string = x
-            #print("Vector entry: {} Simularity: {}\n".format(x, entry_x_similarity))
+              #print("Vector entry: {} Simularity: {}\n".format(x, entry_x_similarity))
+        # if simularity is high enough, print the answer from the csv file
         if highest_simularity > 0.5:  
           print(CSV[highest_simularity_string])
-          #print(highest_simularity)
         else:
           print("I'm not quite sure what you mean! Try asking something else!")
       except Exception:
