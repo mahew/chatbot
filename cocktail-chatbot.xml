@@ -43,6 +43,49 @@
     <template>#ingredients$<star /></template>
   </category>
 
+  <!-- Greetings and Politeness -->
+  <category> 
+    <pattern> HELLO </pattern>
+    <template>Hello! How are you?</template> 
+  </category>
+
+  <category> 
+    <pattern> HELLO * </pattern>
+    <template><srai>HELLO</srai></template> 
+  </category>
+
+  <category> 
+    <pattern> HI </pattern>
+    <template><srai>HELLO</srai></template> 
+  </category>
+
+  <category> 
+    <pattern> HI * </pattern>
+    <template><srai>HELLO</srai></template> 
+  </category>
+
+  <category> 
+    <pattern> HOW ARE YOU </pattern>
+    <template>I'm great thanks! How are you today?</template>
+  </category>
+
+  <category>
+    <pattern> I AM * </pattern>
+    <template>Amazing. Would you like to know anything about cocktails?</template>
+  </category>
+
+  <!-- Exit the chatbot -->
+  <category>
+    <pattern> GOODBYE </pattern>
+    <template>#exit$</template>
+  </category>
+
+  <category>
+    <pattern> BYE </pattern>
+    <template>#exit$</template>
+  </category>
+
+  <!-- Default response, go to bag of words repsonses-->
   <category>
     <pattern> * </pattern>
     <template>|<star /></template>
