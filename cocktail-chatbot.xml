@@ -1,19 +1,50 @@
 <aiml version="1.0.1" encoding="UTF-8">
+  <!-- COCKTAIL SECTION -->
+  <category>
+    <pattern>MY FAVOURAITE COCKTAIL IS A *</pattern>
+    <template>
+        Ah a good choice! I also enjoy a <set name = "fav"><star/>! </set>
+    </template>  
+  </category>  
 
-<!-- COCKTAIL SECTION -->
-<category>
-  <pattern> CAN YOU RECOMMEND A COCKTAIL? </pattern>
-  <template>#random$</template>
-</category>
+  <category>
+    <pattern>DO YOU REMEMBER MY FAVOURAITE COCKTAIL</pattern>
+    <template>
+        <condition>
+          <li name="fav" value="unknown">You haven't told me your favouraite cocktail yet!</li>
+          <li name="fav" value="">You haven't told me your favouraite cocktail yet!</li>
+          <li>Ofcourse! It's a <get name = "fav"/>!</li>
+        </condition>
+    </template>  
+  </category>  
 
-<category>
-  <pattern> WHAT IS A * </pattern>
-  <template>#define$<star /></template>
-</category>
+  <category>
+    <pattern> RECOMMEND ME A COCKTAIL </pattern>
+    <template>#random$</template>
+  </category>
 
-<category>
-  <pattern> * </pattern>
-  <template>|<star /></template>
-</category>
+  <category>
+    <pattern> SHOW ME A * </pattern>
+    <template>#define$<star /></template>
+  </category>
 
+  <category>
+    <pattern> HOW DO YOU MAKE A * </pattern>
+    <template>#recipe$<star /></template>
+  </category>
+
+  <category>
+    <pattern> WHAT GLASS DO YOU USE FOR A * </pattern>
+    <template>#recipe$<star /></template>
+  </category>
+
+  <category>
+    <pattern> WHAT INGREDIENTS ARE IN A * </pattern>
+    <template>#define$<star /></template>
+  </category>
+
+  <category>
+    <pattern> * </pattern>
+    <template>|<star /></template>
+  </category>
 </aiml>

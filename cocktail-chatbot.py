@@ -32,6 +32,7 @@ def api(req, search = ""):
         rand_url = r"random.php"
         response = get_json_response(rand_url)
         if response != False:
+            print("I reccomend a " + response["drinks"][0]["strDrink"] + " , Here is a picture!")
             show_cocktail(response)
             return "Anything else you would like to know?"
 
