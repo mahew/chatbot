@@ -25,8 +25,53 @@ def api(req, search = ""):
             show_cocktail(response)
             return "Anything else you would like to know?"
             
-    elif req == "search-ingredient":
-        pass
+    elif req == "recipe":
+        recipe_url = r"search.php?s=" + search
+        response = get_json_response(recipe_url)
+        if response != False:
+            print(response["drinks"][0]["strInstructions"])
+            return "Anything else you would like to know?"
+
+    elif req == "glass":
+        glass_url = r"search.php?s=" + search
+        response = get_json_response(glass_url)
+        if response != False:
+            print(response["drinks"][0]["strGlass"])
+            return "Anything else you would like to know?"
+
+    elif req == "ingredients":
+        glass_url = r"search.php?s=" + search
+        response = get_json_response(glass_url)
+        if response != False:
+
+            ingredients = []
+            ingredients.append(response["drinks"][0]["strIngredient1"])
+            ingredients.append(response["drinks"][0]["strIngredient2"])
+            ingredients.append(response["drinks"][0]["strIngredient3"])
+            ingredients.append(response["drinks"][0]["strIngredient4"])
+            ingredients.append(response["drinks"][0]["strIngredient5"])
+            ingredients.append(response["drinks"][0]["strIngredient6"])
+            ingredients.append(response["drinks"][0]["strIngredient7"])
+            ingredients.append(response["drinks"][0]["strIngredient8"])
+
+            ingredient_measures = []
+            ingredient_measures.append(response["drinks"][0]["strMeasure1"])
+            ingredient_measures.append(response["drinks"][0]["strMeasure2"])
+            ingredient_measures.append(response["drinks"][0]["strMeasure3"])
+            ingredient_measures.append(response["drinks"][0]["strMeasure4"])
+            ingredient_measures.append(response["drinks"][0]["strMeasure5"])
+            ingredient_measures.append(response["drinks"][0]["strMeasure6"])
+            ingredient_measures.append(response["drinks"][0]["strMeasure7"])
+            ingredient_measures.append(response["drinks"][0]["strMeasure8"])
+
+            for x in range(8):
+              if ingredients[x] != None:
+                if ingredient_measures[x] != None:
+                  print(ingredient_measures[x] + ingredients[x])
+                else:
+                  print(ingredients[x])
+
+            return "Anything else you would like to know?"
 
     elif req == "random":
         rand_url = r"random.php"
@@ -97,6 +142,7 @@ while True:
         result = api(request, search)
         print(result)
 
+    # if no aiml command found, use bag of words with tf.idf cosine simularity to respond
     elif answer[0] == '|':
         entry = answer[1:]
         # Need to make the string iterable, [] makes string into list

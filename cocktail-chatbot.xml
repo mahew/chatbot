@@ -35,12 +35,12 @@
 
   <category>
     <pattern> WHAT GLASS DO YOU USE FOR A * </pattern>
-    <template>#recipe$<star /></template>
+    <template>#glass$<star /></template>
   </category>
 
   <category>
     <pattern> WHAT INGREDIENTS ARE IN A * </pattern>
-    <template>#define$<star /></template>
+    <template>#ingredients$<star /></template>
   </category>
 
   <category>
