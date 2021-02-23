@@ -1,4 +1,9 @@
 <aiml version="1.0.1" encoding="UTF-8">
+  <category>
+    <pattern> DO YOU KNOW WHAT THIS IS </pattern>
+    <template>#cnn$</template>
+  </category>
+
   <!-- COCKTAIL SECTION -->
   <category>
     <pattern>MY FAVOURITE COCKTAIL IS A *</pattern>
@@ -84,6 +89,23 @@
     <pattern> BYE </pattern>
     <template>#exit$</template>
   </category>
+  
+  <!-- Fuzzy Question -->
+    <category>
+      <pattern> HOW STRONG IS *</pattern>
+      <template>#fuzzy$<star index="1"/></template>
+  </category>  
+  
+  <!-- NTLK FOL Inputs -->
+  <category>
+      <pattern> I KNOW THAT * IS *</pattern>
+      <template>#knowledge$<star index="1"/> is <star index="2"/></template>
+  </category>  
+
+  <category>
+      <pattern> CHECK THAT * IS *</pattern>
+      <template>#checkknowledge$<star index="1"/> is <star index="2"/></template>
+  </category>  
 
   <!-- Default response, go to bag of words repsonses-->
   <category>
