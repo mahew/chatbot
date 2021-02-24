@@ -20,7 +20,7 @@ from simpful import *
 ##############################################################################
 FS = FuzzySystem()
 
-LowT = TriangleFuzzySet(0,7,14,   term="low")
+LowT = TriangleFuzzySet(4,7,14,   term="low")
 MedT = TriangleFuzzySet(10,12,40,  term="medium")
 HighT = TriangleFuzzySet(14,40,100, term="high")
 FS.add_linguistic_variable("alcohol", LinguisticVariable([LowT, MedT, HighT], 
@@ -34,9 +34,9 @@ SAT = AutoTriangle(3, terms=['harsh', 'average', 'smooth'], universe_of_discours
 FS.add_linguistic_variable("smoothness", SAT)
 
 FS.add_rules([
-	"IF (alcohol IS high) OR (sweetness IS low) THEN (smoothness IS harsh)",
+	"IF (alcohol IS high) THEN (smoothness IS harsh)",
 	"IF (alcohol IS low) THEN (smoothness IS smooth)",
-    "IF (alcohol IS medium) AND (sweetness IS low) THEN (smoothness IS average)"
+    "IF (alcohol IS medium) AND (sweetness IS low) THEN (smoothness IS average)",
 	"IF (alcohol IS medium) AND (sweetness IS high) THEN (smoothness IS high)"
 	])
 
@@ -201,6 +201,7 @@ def api(req, search = ""):
         elif req == "knowledge":
             object, subject = search.split(' is ')
             expr=read_expr(subject + '(' + object + ')')
+            print(expr)
             kb.append(expr) 
             answer=ResolutionProver().prove(expr, kb, verbose=True)
             if answer:
@@ -208,6 +209,8 @@ def api(req, search = ""):
                 print("This is contradicting! I have ignored you.")
             else:
                 print('OK, I will remember that',object,'is', subject)
+
+
             return "Anything else you would like to know?"
     
         elif req == "checkknowledge": 

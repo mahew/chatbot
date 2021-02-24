@@ -92,7 +92,7 @@
   
   <!-- Fuzzy Question -->
     <category>
-      <pattern> HOW STRONG IS *</pattern>
+      <pattern> HOW SMOOTH IS *</pattern>
       <template>#fuzzy$<star index="1"/></template>
   </category>  
   
