@@ -8,14 +8,14 @@ from tkinter import filedialog
 import tensorflow as tf
 import tensorflow.keras as keras
 import numpy as np
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import json, requests
 import pandas
 import aiml
 import sys
 import csv
 import warnings
-from simpful import *
+from simpful import FuzzySystem, TriangleFuzzySet, LinguisticVariable, AutoTriangle
 
 ##############################################################################
 cog_key = 'e3f58c2d955747099f59135d793e2ce8'
@@ -272,8 +272,8 @@ def show_cocktail(cocktail_json):
     # get image of drink from api and use matplotlib to show it
     response = requests.get(cocktail_json["drinks"][0]["strDrinkThumb"], stream=True)
     img = Image.open(response.raw)
-    #plt.imshow(img)
-    #plt.show()
+    plt.imshow(img)
+    plt.show()
 
 def calculate_cosine_simularity(*strings): 
     vectors = [t for t in get_string_vectors(*strings)]
