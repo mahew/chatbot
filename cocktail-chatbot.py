@@ -205,12 +205,11 @@ def api(req, search = ""):
             kb.append(expr) 
             answer=ResolutionProver().prove(expr, kb, verbose=True)
             if answer:
+                print('OK, I will remember that',object,'is', subject)
+            else:
                 kb.remove(expr)
                 print("This is contradicting! I have ignored you.")
-            else:
-                print('OK, I will remember that',object,'is', subject)
-
-
+                
             return "Anything else you would like to know?"
     
         elif req == "checkknowledge": 
