@@ -3,24 +3,32 @@ from sklearn.metrics.pairwise import cosine_similarity
 from PIL import Image
 from nltk.sem import Expression
 from nltk.inference import ResolutionProver
-import tkinter as tk
-from tkinter import filedialog
-import tensorflow as tf
-import tensorflow.keras as keras
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import json, requests
 import pandas
 import aiml
 import sys
+import uuid
 import csv
 import warnings
 from simpful import FuzzySystem, TriangleFuzzySet, LinguisticVariable, AutoTriangle
+import os
+from azure.cognitiveservices.language.textanalytics import TextAnalyticsClient
+from msrest.authentication import CognitiveServicesCredentials
+
+import constants
+from cnn import classify
 
 ##############################################################################
-cog_key = 'e3f58c2d955747099f59135d793e2ce8'
-cog_endpoint = 'https://mattschatbotservice.cognitiveservices.azure.com/'
-cog_region = 'westeurope'
+
+
+# Get a client for your text analytics cognitive service resource
+text_analytics_client = TextAnalyticsClient(endpoint=constants.cog_endpoint,
+                credentials=CognitiveServicesCredentials(constants.cog_key))
+
 ##############################################################################
 
 ##############################################################################
@@ -47,13 +55,6 @@ FS.add_rules([
 	])
 
 #FS.produce_figure(outputfile='plot.pdf')
-##############################################################################
-
-##############################################################################
-img_height = 256
-img_width = 256
-cnn_model = tf.keras.models.load_model('chatbot_model.h5')
-class_names = ['beer', 'cocktail', 'wine']
 ##############################################################################
 
 ##############################################################################
@@ -88,32 +89,7 @@ with open('cocktailQA.csv') as f:
 def api(req, search = ""):
     try:
         if req == "cnn":
-            print("Hmmmm.... let me take a look at it, can you provide the file?")
-            root = tk.Tk()
-            root.withdraw()        
-            file_path = filedialog.askopenfilename()
-            root.lift()
-            
-            img = keras.preprocessing.image.load_img(
-                file_path, target_size=(img_height, img_width)
-            )
-            
-            img_array = keras.preprocessing.image.img_to_array(img)
-            img_array = tf.expand_dims(img_array, 0)
-            
-            predictions = cnn_model.predict(img_array)
-            score = tf.nn.softmax(predictions[0])
-            confidence = 100 * np.max(score)
-            
-            if confidence < 70:
-                print("I'm not very sure what this is, sorry! Try ask me what something else is")
-            else:
-                print(
-                    "This image is most likely a {} I have {:.2f} percent confidence in my predicion."
-                    .format(class_names[np.argmax(score)], confidence)
-                )
-            
-            return "Anything else you would like to know?"
+            classify()
     
         elif req == "define":
             # search the api for the given cocktail
@@ -254,6 +230,30 @@ def api(req, search = ""):
       print(e)
       print("I'm not sure what that is! Try asking me again")
     
+# Create a function that makes a REST request to the Text Translation service
+def translate_text(text, to_lang='en', from_lang='en'):
+    # Create the URL for the Text Translator service REST request
+    path = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0'
+    params = '&from={}&to={}'.format(from_lang, to_lang)
+    constructed_url = path + params
+
+    # Prepare the request headers with Cognitive Services resource key and region
+    headers = {
+        'Ocp-Apim-Subscription-Key': cog_key,
+        'Ocp-Apim-Subscription-Region':cog_region,
+        'Content-type': 'application/json',
+        'X-ClientTraceId': str(uuid.uuid4())
+    }
+
+    # Add the text to be translated to the body
+    body = [{
+        'text': text
+    }]
+
+    # Get the translation
+    request = requests.post(constructed_url, headers=headers, json=body)
+    response = request.json()
+    return response[0]["translations"][0]["text"]
 
 def get_json_response(url):
     # use base url and additional url arguments provided
@@ -304,6 +304,15 @@ while True:
         print(e)
         break
 
+    language_analysis = text_analytics_client.detect_language(documents=[{"id": 1, "text": userInput}])
+    lang = language_analysis.documents[0].detected_languages[0]
+    inputLang = lang.iso6391_name
+
+    if inputLang != "en":
+        translatedInput = translate_text(userInput, from_lang=inputLang)
+
+    userInput = translatedInput
+
     #pre-process user input and determine response agent (if needed)
     answer = kern.respond(userInput)
 
@@ -313,7 +322,10 @@ while True:
         request = command[0]
         search = command[1]
         result = api(request, search)
-        print(result)
+        if inputLang != "en":
+            translatedOutput = translate_text(result, to_lang=inputLang)
+        else:
+            print(result)
 
     # if no aiml command found, use bag of words with tf.idf cosine simularity to respond
     elif answer[0] == '|':
@@ -342,4 +354,8 @@ while True:
         print("I'm not quite sure what you mean! Try asking something else!")
 
     else:
-        print(answer)
+        if inputLang != "en":
+            translatedOutput = translate_text(answer, to_lang=inputLang, from_lang="en")
+            print(translatedOutput)
+        else:
+            print(answer)
