@@ -52,5 +52,5 @@ def check_knowledge(statement, verbose):
         else:
             replys.append("Sorry I don't know.")
         
-        replys.append("Anything else you would like to know?")
-        return replys
+    replys.append("Anything else you would like to know?")
+    return replys
