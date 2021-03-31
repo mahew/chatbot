@@ -11,12 +11,9 @@ img_width = 256
 cnn_model = tf.keras.models.load_model('./data/chatbot_model.h5')
 class_names = ['beer', 'cocktail', 'wine']
 
-def classify():
-    root = tk.Tk()
-    root.withdraw()        
-    file_path = filedialog.askopenfilename()
-    root.lift()
-    
+def classify(gui):
+    file_path = gui.get_file()
+
     img = keras.preprocessing.image.load_img(
         file_path, target_size=(img_height, img_width)
     )
