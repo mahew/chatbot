@@ -1,10 +1,11 @@
 import tkinter as tk
 from tkinter import filedialog
-from PIL import Image, ImageGrab
+from PIL import ImageGrab
 from chatbot import process_input
 from language import read_text
 
 BG_COLOUR = 'white'
+B1 = "<Button-1>"
 
 class ChatbotGUI:
     last_x, last_y = None, None
@@ -32,16 +33,16 @@ class ChatbotGUI:
  
         self.canvas = tk.Canvas(self.app, bg=BG_COLOUR)
         self.canvas.grid(row=7, column=0, columnspan=14, rowspan=2, sticky="nsew")
-        self.canvas.bind("<Button-1>", self.get_xy)
+        self.canvas.bind(B1, self.get_xy)
         self.canvas.bind("<B1-Motion>", self.draw)
 
         self.clear_button = tk.Button(self.app, bg='red', text="Clear")
         self.clear_button.grid(column=14, columnspan=2, row=8, rowspan=1, sticky="nsew")
-        self.clear_button.bind("<Button-1>", self.clear_canvas)
+        self.clear_button.bind(B1, self.clear_canvas)
 
         self.submit_button = tk.Button(self.app, bg='green', text="Submit")
         self.submit_button.grid(column=14, columnspan=2, row=7, rowspan=1, sticky="nsew")
-        self.submit_button.bind("<Button-1>", self.submit_canvas)
+        self.submit_button.bind(B1, self.submit_canvas)
         
         self.bring_front()
         self.app.mainloop()

@@ -1,7 +1,5 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
-import tkinter as tk
-from tkinter import filedialog
 import tensorflow as tf
 import tensorflow.keras as keras
 import numpy as np

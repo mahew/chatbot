@@ -3,17 +3,9 @@ import requests
 from azure.cognitiveservices.language.textanalytics import TextAnalyticsClient
 import azure.cognitiveservices.speech as speech
 from msrest.authentication import CognitiveServicesCredentials
-
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from azure.cognitiveservices.vision.computervision.models import OperationStatusCodes
-from azure.cognitiveservices.vision.computervision.models import VisualFeatureTypes
-
-from array import array
-import os
-import sys
 import time
-
-
 from constants import COG_ENDPOINT, COG_KEY, COG_REGION, CV_KEY, CV_ENDPOINT
 
 # Get a client for your text analytics cognitive service resource
@@ -92,7 +84,6 @@ def read_text(image_path):
         time.sleep(1)
 
     full_text = ""
-    # Print results, line by line
     if recognize_handwriting_result.status == OperationStatusCodes.succeeded:
         for text_result in recognize_handwriting_result.analyze_result.read_results:
             for line in text_result.lines:
