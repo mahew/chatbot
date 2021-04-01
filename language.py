@@ -44,7 +44,7 @@ def translate_text(text, to_lang='en', from_lang='en'):
         text = response[0]["translations"][0]["text"]
     except Exception:
         text = None
-
+    print(text)
     return text
 
 def get_input_lang(text):

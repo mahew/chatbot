@@ -15,7 +15,7 @@ if answer:
    print("Contradiction with the knowledge base, exiting")
    sys.exit()
 
-def add_knowledge(statement, verbose):
+def add_knowledge(statement, verbose=False):
     replys = []
     object, subject = statement.split(' is ')
     expr=read_expr(subject + '(' + object + ')')
@@ -31,7 +31,7 @@ def add_knowledge(statement, verbose):
     replys.append("Anything else you would like to know?")
     return replys
 
-def check_knowledge(statement, verbose):
+def check_knowledge(statement, verbose=False):
     # check that * is *"
     replys = []
     object, subject = statement.split(' is ')
@@ -39,14 +39,14 @@ def check_knowledge(statement, verbose):
     expr=read_expr(raw_expr)
     answer=ResolutionProver().prove(expr, kb, verbose=verbose)
     if answer:
-        replys.append("That is Correct! Anything else you would like to know?")
+        replys.append("That is Correct!")
     else:
         if "not" in subject:
             subject = subject.replace("not", "")
         else:
             subject = "not " + subject
         expr=read_expr(subject + '(' + object + ')')
-        answer=ResolutionProver().prove(expr, kb, verbose=True)
+        answer=ResolutionProver().prove(expr, kb, verbose=verbose)
         if answer:
             replys.append("This is definitely false")
         else:
