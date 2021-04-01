@@ -98,4 +98,4 @@ plt.show()
 
 #https://www.tensorflow.org/tutorials/keras/save_and_load
 
-model.save('chatbot_model.h5')
+model.save('./data/chatbot_model.h5')

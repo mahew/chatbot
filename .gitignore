@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 chatbot_model.h5
 /chatbot-env
+data/handwriting.png
